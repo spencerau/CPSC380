@@ -35,8 +35,8 @@ int main(void) {
          * (2) the child process will invoke execvp()
          * (3) if command included &, parent will invoke wait()
         */
-        //cin >> command; 
-        command = "ls -l -v";
+        cin >> command; 
+        //command = "ls -l -v";
         if (command == "exit") {
             should_run = 0;
             break;
@@ -46,16 +46,12 @@ int main(void) {
         char *token = strtok(temp, " ");
         int i = 0;
         while (token != NULL) {
-            //cout << "TOKEN: " << token << endl;
             args[i] = strdup(token);
-            //cout << args[i] << endl;
             token = strtok(NULL, " ");
             i++;
         }
         delete temp;
         delete token;
-        // append a NULL to the end
-        args[i] = strdup(NULL);
         // fork a child process
         pid = fork();
         // error checking if the fork failed
@@ -68,10 +64,16 @@ int main(void) {
             execvp(args[0], args);
             // need to implement error checking for execvp
         }
+        // parent process
+        else {
+            wait(NULL);
+            printf("Child Process is complete\n");
+        }
         // implement & where the parent process calls wait() and waits for child process to finish
 
-        cout << endl;
     }
+
+    //delete args;
     return 0;
 
 }
