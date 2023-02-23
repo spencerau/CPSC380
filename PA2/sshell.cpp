@@ -39,54 +39,85 @@ int main(void) {
         printf("osh> ");
         fflush(stdout);
         ampersand = 0;
-        
+
         char *command = new char();
-        fgets(command, MAX_LINE/2+1, stdin);
-        // need to strip command of '\n'
+        fgets(command, MAX_LINE, stdin);
+        // check if user wants to exit
+        if (strcmp(command, "exit\n") == 0) {
+            should_run = 0;
+            continue;
+            break;
+        }
+        // strip command of '\n'
         int len = strlen(command);
         command[len-1] = '\0';
-        // check if user wants to exit
-        if (command == "exit") {
-            should_run = 0;
-            break;
+        if (command[len-2] == '&') {
+            ampersand = 1;
+            command[len-2] = '\0';
         }
         // tokenize command
         char *token = strtok(command, " ");
         int i = 0;
         while (token != NULL) {
-            if (token == "&") ampersand = 1;
-            args[i] = strdup(token);
-            token = strtok(NULL, " ");
+            // maybe use strcmp(str1, str2) to get rid of warnings
+            args[i++] = strdup(token);
             i++;
+            token = strtok(NULL, " ");
         }
         args[i] = nullptr;
         delete command;
         delete token;
+
         // fork a child process
         pid = fork();
         // error checking if the fork failed
         if (pid < 0) {
-            fprintf(stderr, "Fork Failed");
+            fprintf(stderr, "Fork Failed\n");
             return -1;
         }
+
         // child process
         else if (pid == 0) {
-            cout << "args[0]: " << args[0] << endl;
-            execvp(args[0], args);
+            if (execvp(args[0], args) == -1) {
+                fprintf(stderr, "execvp() failed\n");
+                continue;
+            }
             printf("The child process is executing\n");
-            //exit(1);
+            // the child process will execute in the background while it reprompts the user
+            // this is not correct
+            //if (ampersand) continue;
+
             // need to implement error checking for execvp
             // it returns -1 if an error has occured
         }
+
         // parent process
         else {
             //wait(NULL);
             cout << "Child Process created with pid " << pid << endl;
             int status;
-            waitpid(pid, &status, 0);
+            // wait on the child process to complete
+            if (ampersand) waitpid(pid, &status, 0);
             cout << "Child Process is complete with status " << status << endl;
         }
-        // implement & where the parent process calls wait() and waits for child process to finish
+        // implement '&' where the parent process calls wait() and waits for child process to finish
+        // supposed to use fork() twice so that it creates another child process, making the original parent a grandparent?
+        // the grandchild process will run execvp() "in the background"
+        // need to call setsid() on the original child process in order to set it as the parent in a new process that will reprompt the user
+        // grandparent needs to wait() on inital child
+        // set original pid to a new pid, so grandPID = setsid()?
+        // then we do 
+        /*
+        pid_t pid;
+        pid_t grandPID;
+        pid = fork();
+        grandPID = setsid();
+        pid = fork();
+        */
+        // check with Prof Springer if this is the correct way to go about part 3
+        // or use setpgid() instead of calling fork twice?
+        // also using daemon() is another solution?
+        // other stuff about handling zombie processes with double forking - read up more about this
 
         /*
         In fact, under normal termination, exit() will be called either directly (as shown above) or indirectly, as the C run-time library 
