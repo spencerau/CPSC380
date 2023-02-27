@@ -1,6 +1,12 @@
 # sshell
 
 + Program Description
++ This program simluates a shell, with the promp "osh>"
++ It will keep reprompting the user until "exit" is entered
++ It uses execvp() to pull the command entered along with any flags
++ It creates a new process with fork() and has the child process call execvp()
++ If the user enters an "&" character at the end then the parent process will call
+waitpid() and wait until the child process finishes
 
 ## Identifying Information
 
@@ -36,3 +42,4 @@
 ## Execution Instructions
 
 * ./shell
+* osh> "command" "-flag1" "-flag2" (&)

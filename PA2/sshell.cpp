@@ -5,8 +5,13 @@
  * CPSC 380 - Section 1
  * PA2
  * 
- * 
- * */
+ * This program simluates a shell, with the promp "osh>"
+ * It will keep reprompting the user until "exit" is entered
+ * It uses execvp() to pull the command entered along with any flags
+ * It creates a new process with fork() and has the child process call execvp()
+ * If the user enters an "&" character at the end then the parent process will call
+ * waitpid() and wait until the child process finishes
+ **/
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -75,7 +80,6 @@ int main(void) {
             fprintf(stderr, "Fork Failed\n");
             return -1;
         }
-
         // child process
         else if (pid == 0) {
             // it returns -1 if an error has occured
@@ -85,7 +89,6 @@ int main(void) {
             }
             //printf("The child process is executing\n");
         }
-
         // parent process
         else {
             //cout << "Child Process created with pid " << pid << endl;
@@ -94,40 +97,7 @@ int main(void) {
             if (ampersand) waitpid(pid, &status, 0);
             //cout << "Child Process is complete with status " << status << endl;
         }
-        // implement '&' where the parent process calls wait() and waits for child process to finish
-        // supposed to use fork() twice so that it creates another child process, making the original parent a grandparent?
-        // the grandchild process will run execvp() "in the background"
-        // need to call setsid() on the original child process in order to set it as the parent in a new process that will reprompt the user
-        // grandparent needs to wait() on inital child
-        // set original pid to a new pid, so grandPID = setsid()?
-        // then we do 
-        /*
-        pid_t pid;
-        pid_t grandPID;
-        pid = fork();
-        grandPID = setsid();
-        pid = fork();
-        */
-        // check with Prof Springer if this is the correct way to go about part 3
-        // or use setpgid() instead of calling fork twice?
-        // also using daemon() is another solution?
-        // other stuff about handling zombie processes with double forking - read up more about this
-
-        /*
-        In fact, under normal termination, exit() will be called either directly (as shown above) or indirectly, as the C run-time library 
-        (which is added to UNIX executable files) will include a call to exit() by default.
-
-        A parent process may wait for the termination of a child process by using the wait() system call. The wait() system call is passed 
-        a parameter that allows the parent to obtain the exit status of the child. This system call also returns the process identifier of 
-        the terminated child so that the parent can tell which of its children has terminated:
-
-        pid_t pid;
-        int status;
- 
-        pid = wait(&status);
-        */
     }
-    //delete args;
     return 0;
 
 }
