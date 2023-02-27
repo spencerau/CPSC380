@@ -18,7 +18,8 @@
 
 using namespace std;
 
-#define MAX_LINE 80 /* The maximum length command*/
+/* The maximum length command*/
+#define MAX_LINE 80
 
 int main(void) {
     // command line arguments
@@ -48,7 +49,7 @@ int main(void) {
             continue;
             break;
         }
-        // strip command of '\n'
+        // strip command of newline and check for & flag
         int len = strlen(command);
         command[len-1] = '\0';
         if (command[len-2] == '&') {
@@ -59,8 +60,7 @@ int main(void) {
         char *token = strtok(command, " ");
         int i = 0;
         while (token != NULL) {
-            // maybe use strcmp(str1, str2) to get rid of warnings
-            args[i++] = strdup(token);
+            args[i] = strdup(token);
             i++;
             token = strtok(NULL, " ");
         }
@@ -78,27 +78,21 @@ int main(void) {
 
         // child process
         else if (pid == 0) {
+            // it returns -1 if an error has occured
             if (execvp(args[0], args) == -1) {
                 fprintf(stderr, "execvp() failed\n");
                 continue;
             }
-            printf("The child process is executing\n");
-            // the child process will execute in the background while it reprompts the user
-            // this is not correct
-            //if (ampersand) continue;
-
-            // need to implement error checking for execvp
-            // it returns -1 if an error has occured
+            //printf("The child process is executing\n");
         }
 
         // parent process
         else {
-            //wait(NULL);
-            cout << "Child Process created with pid " << pid << endl;
-            int status;
+            //cout << "Child Process created with pid " << pid << endl;
+            int status = -99;
             // wait on the child process to complete
             if (ampersand) waitpid(pid, &status, 0);
-            cout << "Child Process is complete with status " << status << endl;
+            //cout << "Child Process is complete with status " << status << endl;
         }
         // implement '&' where the parent process calls wait() and waits for child process to finish
         // supposed to use fork() twice so that it creates another child process, making the original parent a grandparent?
