@@ -48,6 +48,7 @@ int main(int argc, char *argv[]) {
     // On success, pthread_join() returns 0; on error, it returns an error number.
     if (pthread_join(pointTh, NULL) != 0) {
         fprintf(stderr, "Thread Point failed to join");
+        return -1;
     }
 
     // NOTE: ONLY NEED TO USE ONE THREAD - CREATE POINTS AND CHECK IF IN CIRCLE
@@ -62,8 +63,8 @@ int main(int argc, char *argv[]) {
     }
     if (pthread_join(piTh, NULL) != 0) {
         fprintf(stderr, "Thread Point failed to join");
+        return -1;
     }
-
     cout << "Pi is estimated to be: " << pi << " with " << npoints << " points" << endl;
     cout << "Pi is supposed to  be: " << M_PI << endl;
 }
