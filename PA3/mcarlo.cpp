@@ -7,7 +7,7 @@
 #include <cmath>
 #include <ctime>
 #include <math.h>
-#include <ctype.h>
+//#include <ctype.h>
 
 using namespace std;
 
@@ -18,8 +18,8 @@ void *genPoints(void *arg);
 void *findPi(void *arg);
 double random_double();
 
-pthread_t tid; /* the thread identifier */
-pthread_attr_t attr; /* set of attributes for the thread */
+//pthread_t tid; /* the thread identifier */
+//pthread_attr_t attr; /* set of attributes for the thread */
 
 int main(int argc, char *argv[]) {
     
@@ -74,7 +74,7 @@ void *genPoints(void *arg) {
     double x;
     double y;
     int num = 0;
-    srand(time(0));
+    srandom(time(0));
     /* Check for points inside circle */
     for (int i = 0; i < npoints; i++) {	
     /* generate random numbers between -1.0 and +1.0 (exclusive) */
@@ -97,5 +97,6 @@ void *findPi(void *arg) {
 /* Generates a double precision random number */
 double random_double() 
 {
-	return rand() / ((double)RAND_MAX + 1);
+    // rand() is not POSIX compliant
+	return random() / ((double)RAND_MAX + 1);
 }
