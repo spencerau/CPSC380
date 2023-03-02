@@ -1,13 +1,20 @@
+/**
+ * @author Spencer Au
+ * ID: 2385256
+ * spau@chapman.edu
+ * CPSC 380 - Section 1
+ * PA3
+ * 
+ * 
+ **/
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <iostream>
-#include <string>
+#include <string.h>
 #include <pthread.h>
-#include <cmath>
-#include <ctime>
 #include <math.h>
-//#include <ctype.h>
+#include <ctype.h>
+#include <iostream>
 
 using namespace std;
 
@@ -37,7 +44,6 @@ int main(int argc, char *argv[]) {
     }
 
     npoints = atoi(argv[1]);
-    srand(time(0));
     //double arg[2] = {npoints, hit_count};
     pthread_t pointTh;
     int point_tid = pthread_create(&pointTh, NULL, genPoints, NULL);//(void*)&arg);
@@ -65,8 +71,8 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Thread Point failed to join");
         return -1;
     }
-    cout << "Pi is estimated to be: " << pi << " with " << npoints << " points" << endl;
-    cout << "Pi is supposed to  be: " << M_PI << endl;
+    printf("Pi is estimated to be: %.5f with %d points\n", pi, npoints);
+    printf("Pi is supposed  to be: %.5f\n", M_PI);
 }
 
 void *genPoints(void *arg) {
@@ -97,6 +103,5 @@ void *findPi(void *arg) {
 /* Generates a double precision random number */
 double random_double() 
 {
-    // rand() is not POSIX compliant
 	return random() / ((double)RAND_MAX + 1);
 }
