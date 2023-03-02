@@ -1,6 +1,5 @@
 # sshell
 
-+ Program Description
 + This program simluates a shell, with the promp "osh>"
 + It will keep reprompting the user until "exit" is entered
 + It uses execvp() to pull the command entered along with any flags

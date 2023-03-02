@@ -103,5 +103,6 @@ void *findPi(void *arg) {
 /* Generates a double precision random number */
 double random_double() 
 {
+    // rand() is not POSIX compliant
 	return random() / ((double)RAND_MAX + 1);
 }
