@@ -5,7 +5,12 @@
  * CPSC 380 - Section 1
  * PA3
  * 
- * 
+ * Estimates Pi using the Monte Carlo method
+ * Uses a circle inscribed into a square
+ * Generates a random number of points, and checks which
+ * are inside the circle
+ * Uses one thread to generate points and another to check which
+ * are inside the circle
  **/
 
 #include <stdio.h>
@@ -80,6 +85,7 @@ void *genPoints(void *arg) {
     double x;
     double y;
     int num = 0;
+    // change the seed to system time
     srandom(time(0));
     /* Check for points inside circle */
     for (int i = 0; i < npoints; i++) {	
