@@ -1,0 +1,7 @@
+*.o
+*.txt
+fcfs
+sjf
+rr
+priority
+priority_rr
