@@ -35,8 +35,8 @@ schedule_fcfs.o: schedule_fcfs.cpp
 priority_rr: driver.o list.o CPU.o schedule_priority_rr.o
 	$(CC) $(CFLAGS) -o priority_rr driver.o schedule_priority_rr.o list.o CPU.o
 
-driver.o: driver.cpp
-	$(CC) $(CFLAGS) -c driver.cpp
+driver.o: driver.c
+	$(CC) $(CFLAGS) -c driver.c
 
 schedule_sjf.o: schedule_sjf.cpp
 	$(CC) $(CFLAGS) -c schedule_sjf.cpp

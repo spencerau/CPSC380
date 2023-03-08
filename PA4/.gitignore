@@ -5,3 +5,8 @@ sjf
 rr
 priority
 priority_rr
+list.c
+list.cpp
+list.h
+CPU.c
+driver.cpp

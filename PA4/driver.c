@@ -14,11 +14,7 @@
 //#include "list.h"
 #include "schedulers.h"
 
-#include <iostream>
-
 #define SIZE    100
-
-using namespace std;
 
 int main(int argc, char *argv[])
 {
@@ -37,7 +33,7 @@ int main(int argc, char *argv[])
         name = strsep(&temp,",");
         priority = atoi(strsep(&temp,","));
         burst = atoi(strsep(&temp,","));
-
+        
         // add the task to the scheduler's list of tasks
         add(name,priority,burst);
 

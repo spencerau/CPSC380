@@ -23,9 +23,7 @@ void add(char *name, int priority, int burst) {
     // tid is the task number
     task->tid = tNum;
     tNum++;
-    cout <<"after Task* alloc; before push to Q\n";
     q.push(task);
-    cout << "successfully pushed to Q\n";
 }
 
 void schedule() {
