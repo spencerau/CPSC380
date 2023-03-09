@@ -15,7 +15,6 @@ queue<Task*> q;
 int tNum = 1;
 
 void add(char *name, int priority, int burst) {
-    cout << "before Task* allocation\n";
     Task *task = new Task;
     task->name = name;
     task->priority = priority;
