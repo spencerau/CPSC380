@@ -46,6 +46,7 @@ void schedule() {
             run(task, quantum);
             task->burst -= quantum;
             // CHECK IF THE TASK IS SUPPOSED TO BE SORTED WHEN ITS KICKED OUT BY RR 
+            // This code causes a starvation problem; need to change this
             printf("Task %s has been kicked out\n", task->name);
             pq.push(task);
         }

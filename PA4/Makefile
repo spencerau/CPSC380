@@ -50,5 +50,5 @@ schedule_rr.o: schedule_rr.cpp
 list.o: list.cpp list.h
 	$(CC) $(CFLAGS) -c list.cpp
 
-CPU.o: CPU.cpp cpu.h
-	$(CC) $(CFLAGS) -c CPU.cpp
+CPU.o: CPU.c cpu.h
+	$(CC) $(CFLAGS) -c CPU.c
