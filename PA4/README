@@ -13,3 +13,51 @@ For example, to build the FCFS scheduler, enter
 make fcfs
 
 which builds the fcfs executable file.
+
+# CPU Scheduler
+
++ 
+
+## Identifying Information
+
+* Name: Spencer Au
+* Student ID: 2385256
+* Email: spau@chapman.edu
+* Course: CPSC 380
+* Assignment: PA4 - CPU Scheduler
+
+## Source Files
+
+* CPU.h and CPU.c
+* list.h and list.c
+* schedulers.h
+* task.h
+* driver.c
+* schedule_fcfs.cpp
+* schedule_sjf.cpp
+* schedule_rr.cpp
+* schedule_priority.cpp
+
+## References
+
+* https://en.cppreference.com/w/cpp/container/priority_queue
+* https://www.geeksforgeeks.org/queue-cpp-stl/
+* https://www.geeksforgeeks.org/priority-queue-set-1-introduction/
+* https://stackoverflow.com/questions/16111337/declaring-a-priority-queue-in-c-with-a-custom-comparator
+* https://en.wikipedia.org/wiki/C_POSIX_library
+
+## Known Errors
+
+*
+
+## Build Insructions
+
+* make fcfs
+* make sjf
+* make priority
+* make rr
+
+## Execution Instructions
+
+* 
+

@@ -47,8 +47,8 @@ schedule_priority.o: schedule_priority.cpp
 schedule_rr.o: schedule_rr.cpp
 	$(CC) $(CFLAGS) -c schedule_rr.cpp
 
-list.o: list.cpp list.h
-	$(CC) $(CFLAGS) -c list.cpp
+list.o: list.c list.h
+	$(CC) $(CFLAGS) -c list.c
 
-CPU.o: CPU.cpp cpu.h
-	$(CC) $(CFLAGS) -c CPU.cpp
+CPU.o: CPU.c cpu.h
+	$(CC) $(CFLAGS) -c CPU.c

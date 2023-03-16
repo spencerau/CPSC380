@@ -8,5 +8,5 @@ priority_rr
 list.c
 list.cpp
 list.h
-CPU.c
+CPU.cpp
 driver.cpp
