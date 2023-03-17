@@ -1,22 +1,12 @@
-Completing this project will require writing the following C files:
-
-schedule_fcfs.c
-schedule_sjf.c
-schedule_rr.c
-schedule_priority.c
-schedule_priority_rr.c
-
-The supporting files invoke the appropriate scheduling algorithm. 
-
-For example, to build the FCFS scheduler, enter
-
-make fcfs
-
-which builds the fcfs executable file.
-
 # CPU Scheduler
 
-+ 
++ Simulates a CPU scheduler by utilizing 4 scheduling algorithms, first come first serve,
++ shortest job first, round robin, and priority scheduling.
+
++ Uses std::queue for FCFS and RR, with the Quantum being set to 10
+
++ Uses std::priority_queue with overloaded Comparator comparing burst time and priority
++ for SJF and Priority respectively
 
 ## Identifying Information
 
@@ -46,6 +36,9 @@ which builds the fcfs executable file.
 * https://stackoverflow.com/questions/16111337/declaring-a-priority-queue-in-c-with-a-custom-comparator
 * https://en.wikipedia.org/wiki/C_POSIX_library
 
+* Ammar Askar - #include issues
+* Kevin Nagar - use CPP
+
 ## Known Errors
 
 *
@@ -57,7 +50,19 @@ which builds the fcfs executable file.
 * make priority
 * make rr
 
+* To Remove .o Files: 
+* make clean
+
 ## Execution Instructions
 
-* 
+* For First Come, First Serve:
+* ./fcfs "filename"
 
+* For Shortest Job First:
+* ./sjf "filename"
+
+* For Priority:
+* ./priority "filename"
+
+* For Round Robin:
+* ./rr "filename"
