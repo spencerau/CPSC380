@@ -1,3 +1,13 @@
+/**
+ * @author Spencer Au
+ * ID: 2385256
+ * spau@chapman.edu
+ * CPSC 380 - Section 1
+ * PA4
+ * 
+ * Uses Round Robin with a Quantum of 10 to schedule tasks
+ **/
+
 #include "schedulers.h"
 #include "CPU.h"
 #include "task.h"

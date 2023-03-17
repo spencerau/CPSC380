@@ -1,3 +1,14 @@
+/**
+ * @author Spencer Au
+ * ID: 2385256
+ * spau@chapman.edu
+ * CPSC 380 - Section 1
+ * PA4
+ * 
+ * Uses Priority to schedule tasks
+ * Higher Number = higher priority
+ **/
+
 #include "schedulers.h"
 #include "CPU.h"
 #include "task.h"
