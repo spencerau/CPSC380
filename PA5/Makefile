@@ -1,7 +1,7 @@
 
 
 CC=gcc
-CFLAGS=-Wall
+CFLAGS=-pthread -Wall
 
 clean:
 	rm -rf *.o

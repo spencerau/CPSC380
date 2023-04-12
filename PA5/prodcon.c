@@ -6,6 +6,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <string.h>
+#include <fcntl.h>
 
 #include "buffer_item.h"
 
@@ -93,13 +94,6 @@ int main(int argc, char *argv[]) {
             perror("Error creating producer thread\n");
             exit(EXIT_FAILURE);
         }
-        /*
-        prod_tid = pthread_join(prod_t, NULL);
-        if (prod_tid == -1) {
-            perror("Error joining producer thread\n");
-            exit(EXIT_FAILURE);
-        }
-        */
     }
 
     // create consumer threads
@@ -111,13 +105,6 @@ int main(int argc, char *argv[]) {
             perror("Error creating consumer thread\n");
             exit(EXIT_FAILURE);
         }
-        /*
-        cons_tid = pthread_join(cons_t, NULL);
-        if (cons_tid == -1) {
-            perror("Error joining consumer thread\n");
-            exit(EXIT_FAILURE);
-        }
-        */
     }
 
     // sleep
@@ -185,12 +172,14 @@ void *consumer(void *param) {
         sem_post(&empty);
 
         // checksum
+        
         int cs = checksum(next_consumed.buffer, BUFFER_SIZE);
-        if (next_consumed.cksum != cs) {
+        //printf("Expected Checksum: %X\n", next_consumed.cksum);
+        //printf("Actual Checksum: %X\n", cs);
+        if (next_consumed.cksum != cs) {/* && next_consumed.cksum != 0) {*/
             printf("Checksums do not match when consuming\n");
             printf("Expected Checksum: %X\n", next_consumed.cksum);
             printf("Actual Checksum: %X\n", cs);
-            //printf("Buffer Index: %d", out);
         }
     }
     pthread_exit(0);
@@ -200,7 +189,6 @@ void *consumer(void *param) {
  * Checksum routine for Internet Protocol family headers (C Version)
  * checksum(addr, strlen(addr)))
  */
-
 uint16_t checksum(uint8_t *addr, uint32_t count)
 {
     // fix this

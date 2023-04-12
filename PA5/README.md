@@ -1,5 +1,10 @@
-# CPU Scheduler
+# Thread Synchronization
 
++ Uses 2 named Semaphores, empty and full, and a Mutex Lock in order to enable 
+sychronization for a solution to the producer/consumer problem
+
++ First arg is the sleep time, 2nd arg is amount of producer threads created, and
+third arg is the amount of consumer threads created
 
 
 ## Identifying Information

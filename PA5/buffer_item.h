@@ -1,7 +1,7 @@
 #include <stdint.h>
 
 /* buffer.h */
-#define NUM_ITEMS 25
+#define NUM_ITEMS 5
 #define BUFFER_SIZE 30
 
 struct buffer_itme {
