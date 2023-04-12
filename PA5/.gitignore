@@ -1,0 +1,4 @@
+*.o
+pc
+Checksum.c
+threads_sem
