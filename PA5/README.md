@@ -35,4 +35,4 @@
 
 ## Execution Instructions
 
-* ./pc --**Sleep Time** --**# of Producer Threads** --**# of Consumer Threads**
+* ./pc -**Sleep Time**   -**# of Producer Threads**   -**# of Consumer Threads**
