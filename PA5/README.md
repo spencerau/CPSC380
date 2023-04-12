@@ -35,4 +35,4 @@
 
 ## Execution Instructions
 
-* ./pc -**Sleep Time**   -**# of Producer Threads**   -**# of Consumer Threads**
+* ```./pc | Sleep_Time | #_of_Producer_Threads | #_of_Consumer_Threads```
