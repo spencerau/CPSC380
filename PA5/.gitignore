@@ -2,3 +2,5 @@
 pc
 Checksum.c
 threads_sem
+*.txt
+*.sh

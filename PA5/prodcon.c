@@ -29,7 +29,7 @@ void *producer(void *param); /* the producer thread */
 void *consumer(void *param); /* the consumer thread */
 int insert_item(buffer_item *item);
 int remove_item(buffer_item *item);
-uint16_t checksum(uint8_t *addr, uint32_t count);
+uint16_t checksum(char *addr, uint32_t count);
 
 // mutex protects against if the prod and cons is reading from same buffer
 pthread_mutex_t mutex;
@@ -39,6 +39,8 @@ buffer_item buffer[BUFFER_SIZE];
 int count = 0;
 int in = 0;
 int out = 0;
+
+//FILE* file;
 
 /*
 ./prodcon <delay> <#producer threads> <#consumer threads>
@@ -78,11 +80,31 @@ int main(int argc, char *argv[]) {
     int num_prod_t = atoi(argv[2]);
     int num_cons_t = atoi(argv[3]);
 
-    sem_unlink("empty");
-    sem_unlink("full");
+    #if 0
+    FILE *fp;
+    fp = fopen("output.txt", "w"); // open file for writing
+    file = fp;
+
+    if (fp == NULL) { // check if file was opened successfully
+        printf("Error opening file!\n");
+        return 1;
+    }
+    #endif
+
+    #if 1
+    sem_unlink("/empty");
+    sem_unlink("/full");
+    #endif
+
+    #if 0
+    int firstUnlinkEmpty = sem_unlink("/empty");
+    int firstUnlinkFull = sem_unlink("/full");
+    printf("firstUnlinkEmpty: %d\n", firstUnlinkEmpty);
+    printf("firstUnlinkFull: %d\n", firstUnlinkFull);
+    #endif
     // use sem_open because of Steve Jobs
-    sem_open("empty", O_CREAT | O_EXCL | O_RDWR, 0644, NUM_ITEMS);
-    sem_open("full", O_CREAT | O_EXCL | O_RDWR, 0644, 0);
+    sem_open("/empty", O_CREAT | O_EXCL | O_RDWR, 0644, NUM_ITEMS);
+    sem_open("/full", O_CREAT | O_EXCL | O_RDWR, 0644, 0);
     pthread_mutex_init(&mutex, NULL);
 
     // create producer threads
@@ -111,9 +133,20 @@ int main(int argc, char *argv[]) {
     sleep(delay);
 
     // destroy semaphores this way because of Steve Jobs
-    sem_unlink("empty");
-    sem_unlink("full");
+    sem_unlink("/empty");
+    sem_unlink("/full");
+    #if 0
+    int secondUnlinkEmpty = sem_unlink("empty");
+    int secondUnlinkFull = sem_unlink("full");
+    //printf("secondUnlinkEmpty: %d\n", secondUnlinkEmpty);
+    //printf("secondUnlinkFull: %d\n", secondUnlinkFull);
+    #endif
     pthread_mutex_destroy(&mutex);
+
+    #if 0
+    fclose(fp);
+    fclose(file);
+    #endif
 
     return 0;
 }
@@ -132,11 +165,10 @@ int remove_item(buffer_item *item) {
 
 void *producer(void *param) {
     while (true) {        
-        // checks if there are any open buffers
         buffer_item newItem;
         for (int i = 0; i < BUFFER_SIZE; i++) {
             newItem.buffer[i] = rand() % 256;
-            newItem.cksum = checksum(newItem.buffer, BUFFER_SIZE);
+            newItem.cksum = checksum((char*)newItem.buffer, BUFFER_SIZE);
         }
 
         sem_wait(&empty);
@@ -156,8 +188,6 @@ void *producer(void *param) {
 
 void *consumer(void *param) {
     while (true) {
-        // is there at least one item to read
-
         buffer_item next_consumed;
 
         sem_wait(&full);
@@ -172,11 +202,20 @@ void *consumer(void *param) {
         sem_post(&empty);
 
         // checksum
-        
-        int cs = checksum(next_consumed.buffer, BUFFER_SIZE);
+        int cs = checksum((char*)next_consumed.buffer, BUFFER_SIZE);
+        #if 0
+        int mcmp = memcmp(&next_consumed.cksum, &cs, sizeof(uint16_t));
+        if (mcmp != 0) {
+            printf("Checksums do not match when consuming\n");
+            printf("Expected Checksum: %X\n", next_consumed.cksum);
+            printf("Actual Checksum: %X\n", cs);
+        }
+        //printf("mcmp: %d\n", mcmp);
+        #endif
         //printf("Expected Checksum: %X\n", next_consumed.cksum);
         //printf("Actual Checksum: %X\n", cs);
         if (next_consumed.cksum != cs) {/* && next_consumed.cksum != 0) {*/
+            //fprintf(file, "Checksums do not match when consuming\n");
             printf("Checksums do not match when consuming\n");
             printf("Expected Checksum: %X\n", next_consumed.cksum);
             printf("Actual Checksum: %X\n", cs);
@@ -189,14 +228,15 @@ void *consumer(void *param) {
  * Checksum routine for Internet Protocol family headers (C Version)
  * checksum(addr, strlen(addr)))
  */
-uint16_t checksum(uint8_t *addr, uint32_t count)
+uint16_t checksum(char *addr, uint32_t count)
 {
-    // fix this
-
+    //return ((uint16_t*) addr)[0];
+    
+    #if 1
     uint32_t sum = 0;
 
     uint16_t *buf = (uint16_t *) addr;
-
+    
     // Main summing loop
     while(count > 1)
     {
@@ -212,5 +252,5 @@ uint16_t checksum(uint8_t *addr, uint32_t count)
     while (sum>>16)
         sum = (sum & 0xFFFF) + (sum >> 16);
     return(~sum);
+    #endif
 }
-
