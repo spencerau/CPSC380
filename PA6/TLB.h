@@ -6,113 +6,88 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 
-#define TLB_SIZE 256
+#define TLB_SIZE 16
 
-// represents a TLB entry as a linked list node
 typedef struct TLB_Entry {
     int pageNum;
     int frameNum;
-    struct TLB_Entry *next;
-    struct TLB_Entry *prev;
+    time_t timestamp;
 } TLB_Entry;
 
-// represents a double linked list and uses an array of 16 entires
-// for O(1) lookup
 typedef struct TLB {
-    TLB_Entry *head;
-    TLB_Entry *tail;
+    TLB_Entry **tlb_array;
     int size;
-    int *TLB_Array;
 } TLB;
 
 TLB *newTLB();
-void add_entry(TLB *tlb, int pageNum, int frameNum);
-int lookup_tlb(TLB *tlb, int pageNum);
-void printTLB_Array(int *arr);
-void printTLB_LL(TLB *tlb);
-void freeTLB(TLB *tlb);
+void add_TLB(TLB *tlb, int pageNum, int frameNum);
+int lookup_TLB(TLB *tlb, int pageNum);
+void print_TLB(TLB *tlb);
+void free_TLB(TLB *tlb);
 
-// creates a new TLB
 TLB *newTLB() {
-    //TLB *tlb = new TLB;
     TLB *tlb = (TLB*) malloc(sizeof(TLB));
-    tlb->head = NULL;
-    tlb->tail = NULL;
-    tlb->size = 0;
-    tlb->TLB_Array = (int*) malloc(sizeof(int) * TLB_SIZE);
-    for (int i = 0; i < TLB_SIZE; i++) {
-        tlb->TLB_Array[i] = -1;
+    tlb->tlb_array = (TLB_Entry**) malloc(16 * sizeof(TLB_Entry*));
+    for (int i = 0; i < 16; i++) {
+        tlb->tlb_array[i] = (TLB_Entry*) malloc(sizeof(TLB_Entry));
+        tlb->tlb_array[i]->pageNum = -1;
+        tlb->tlb_array[i]->frameNum = -1;
+        tlb->tlb_array[i]->timestamp = -1;
     }
+    tlb->size = 0;
     return tlb;
 }
 
-// adds a new TLB entry to the TLB
-void add_entry(TLB *tlb, int pageNum, int frameNum) {
+void add_TLB(TLB *tlb, int pageNum, int frameNum) {
     if (tlb->size == 16) {
         // TLB is full, remove the least recently used entry
-        TLB_Entry *remove = tlb->tail;
-        tlb->tail = remove->prev;
-        if (tlb->tail != NULL) {
-            tlb->tail->next = NULL;
+        int min = 0;
+        for (int i = 0; i < 16; i++) {
+            if (tlb->tlb_array[i]->timestamp < tlb->tlb_array[min]->timestamp) {
+                min = i;
+            }
         }
-        tlb->TLB_Array[remove->pageNum] = -1;
-        free(remove);
-        tlb->size--;
+        tlb->tlb_array[min]->pageNum = pageNum;
+        tlb->tlb_array[min]->frameNum = frameNum;
+        tlb->tlb_array[min]->timestamp = time(NULL);
+    } else {
+        // TLB is not full, add the entry to the end of the TLB
+        tlb->tlb_array[tlb->size]->pageNum = pageNum;
+        tlb->tlb_array[tlb->size]->frameNum = frameNum;
+        tlb->tlb_array[tlb->size]->timestamp = time(NULL);
+        tlb->size++;
     }
-
-    // add the new entry to the front of the list
-    TLB_Entry *new_entry = (TLB_Entry*) malloc(sizeof(TLB_Entry));
-    new_entry->pageNum = pageNum;
-    new_entry->frameNum = frameNum;
-    new_entry->next = tlb->head;
-    new_entry->prev = NULL;
-    if (tlb->head != NULL) {
-        tlb->head->prev = new_entry;
-    }
-    tlb->head = new_entry;
-    if (tlb->tail == NULL) {
-        tlb->tail = new_entry;
-    }
-    tlb->TLB_Array[pageNum] = frameNum;
-    tlb->size++;
 }
 
-int lookup_tlb(TLB *tlb, int pageNum) {
-    if (tlb->TLB_Array[pageNum] != -1) {
-        // TLB hit
-        return tlb->TLB_Array[pageNum];
+int lookup_TLB(TLB *tlb, int pageNum) {
+    for (int i = 0; i < 16; i++) {
+        if (tlb->tlb_array[i]->pageNum == pageNum) {
+            // found the entry, update the timestamp and return the frameNum
+            tlb->tlb_array[i]->timestamp = time(NULL);
+            return tlb->tlb_array[i]->frameNum;
+        }
     }
     // TLB miss
     return -1;
 }
 
-void printTLB_Array(int *arr) {
+void print_TLB(TLB *tlb) {
+    printf("TLB:\n");
+    for (int i = 0; i < tlb->size; i++) {
+        printf("TLB[%d]: Page %d: frame %d\n", i, tlb->tlb_array[i]->pageNum, tlb->tlb_array[i]->frameNum);
+    }
+}
+
+void free_TLB(TLB *tlb) {
     for (int i = 0; i < TLB_SIZE; i++) {
-        if (arr[i] != -1) {
-            printf("TLB_Array[%d]: %d\n", i, arr[i]);
-        }
+        free(tlb->tlb_array[i]);
     }
-}
-
-void printTLB_LL(TLB *tlb) {
-    TLB_Entry *curr = tlb->head;
-    while (curr != NULL) {
-        printf("TLB[%d]: %d\n", curr->pageNum, curr->frameNum);
-        curr = curr->next;
-    }
-}
-
-void freeTLB(TLB *tlb) {
-    TLB_Entry *curr = tlb->head;
-    TLB_Entry *next;
-    while (curr != NULL) {
-        next = curr->next;
-        free(curr);
-        curr = next;
-    }
-    free(tlb->TLB_Array);
+    free(tlb->tlb_array);
     free(tlb);
 }
+
+
 
 #endif

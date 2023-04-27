@@ -1,7 +1,7 @@
 
 
 CC=gcc
-CFLAGS= -Wall
+CFLAGS= -Wall -g
 
 clean:
 	rm -rf *.o
