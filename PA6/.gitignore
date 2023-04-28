@@ -1,0 +1,5 @@
+vmmgr
+*.dSYM
+test
+kevinsBullshit.c
+*.o
