@@ -1,9 +1,24 @@
+/**
+ * @author Spencer Au
+ * ID: 2385256
+ * spau@chapman.edu
+ * CPSC 380 - Section 1
+ * PA6 - Virtual Memory
+ * 
+ * Virtual Memory Manager that reads from a file of logical addresses and outputs 
+ * the Logical Address in Decimal and Hex
+ * the Page Number in Decimal and Hex
+ * the Offset in Decimal and Hex 
+ * whether there was a TLB hit or miss, and a Page Fault or not
+ * the corresponding Physical Address in Hex and the Byte value stored at that address
+ * 
+ * The program also outputs the Page Fault Rate and TLB Hit Rate at the end of the program
+ **/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
-//#include <unordered_map>
-//#include <list>
 
 #include "virtualAddress.h"
 #include "TLB.h"
@@ -97,7 +112,6 @@ int main(int argc, char *argv[]) {
 
         // check TLB for page number
         // if page number is in TLB, get frame number from index pageNum and the byte at offset
-        printf("before checkTLB\n");
         int frameNum = checkTLB(virtualAd->pageNum);
         if (frameNum != -1) {
             // TLB hit
@@ -107,7 +121,6 @@ int main(int argc, char *argv[]) {
             printf("TLB Miss\n");
             // if page is not in TLB (TLB Miss), check page table for page number
             // if page is in page table, get frame number from index pageNum and the byte at offset
-            printf("before checkPageTable\n");
             frameNum = checkPageTable(virtualAd->pageNum);
             if (frameNum != -1) {
                 // page hit
@@ -116,12 +129,13 @@ int main(int argc, char *argv[]) {
                 // page fault
                 printf("Page Fault\n");
                 // if page is not in page table (Page Fault), load page from BACKING_STORE.bin
-                printf("before loadFromBS\n");
                 frameNum = loadFromBS(virtualAd->pageNum, virtualAd->offset);
             }
         }
         // print the signed byte which is the value of the byte at the physical address
-        printf("Signed Byte: %X\n", physicalMem[frameNum][virtualAd->offset]);
+        uint16_t physicalAddress = (frameNum << 8) | virtualAd->offset; 
+        printf("Physical Address: %X\n", physicalAddress);
+        printf("Signed Byte: %X\n", (unsigned char)physicalMem[frameNum][virtualAd->offset]);
         free(virtualAd);
         total++;
     }
@@ -172,7 +186,7 @@ int checkPageTable(int pageNum) {
 for 16916, which is 4214, with page number 42 and offset 14, or 
 in decimal page number 66 and offset 20, go to BACKING_STORE.bin and
 read the 256 bytes starting at byte 66 * 256 = 16896, and then
-read the next 20 bytes to get the value at 16916.
+read the next 20 bytes to get the value at 16916, which should be 0
 */
 int loadFromBS(int pageNum, int offset) {
     // access BACKING_STORE.bin as a binary file
@@ -212,11 +226,15 @@ int loadFromBS(int pageNum, int offset) {
 }
 
 void printPageFaultRate() {
-    printf("Page Fault Rate: %f\n", (double)pageFault / (double)total);
+    double num =  (double)pageFault / (double)total;
+    printf("Page Fault Rate: %.1f%%\n", num * 100.0);    
+    //printf("Page Fault Rate: %.3f\n", num );
 }
 
 void printTLBHitRate() {
-    printf("TLB Hit Rate: %f\n", (double)tblHit / (double)total);
+    //printf("TLB Hit Rate: %.3f\n", (double)tblHit / (double)total);
+    double num =  (double)tblHit / (double)total;
+    printf("TLB Hit Rate: %.1f%%\n", num * 100.0);   
 }
 
 void printPageTable() {

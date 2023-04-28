@@ -1,3 +1,14 @@
+/**
+ * @author Spencer Au
+ * ID: 2385256
+ * spau@chapman.edu
+ * CPSC 380 - Section 1
+ * PA6 - Virtual Memory
+ * 
+ * Header File that represents a virtual address
+ **/
+
+
 #include <stdint.h>
 
 #define PAGE_TABLE_SIZE 256
