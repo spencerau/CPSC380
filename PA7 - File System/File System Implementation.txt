@@ -1,0 +1,14 @@
+The inode numbers of file1 and file2 are the same when using a hard link; they also have the same contents
+
+file2.txt still exists when 'rm file1.txt' is called
+
+Cannot boot Mac in Recovery mode to disable SIP and cannot install strace on docker container
+
+The system call used for rm in Unix systems is unlink() for a file or unlinkat() for a pathname; in this case since we are already in the directory the system call used would be unlink()
+
+The inode numbers of file3 and file4 are different as it is a soft link
+
+If I edit file4.txt, then the same edit will show in file3.txt
+
+However, if upon deleting file3.txt, and attempting to edit file4.txt, only a blank file is shown
+
